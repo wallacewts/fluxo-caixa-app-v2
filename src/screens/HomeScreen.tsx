@@ -35,7 +35,7 @@ export const HomeScreen = () => {
             style={styles.button}
             onPress={() => handleLogIn()}
           >
-            <Text style={styles.btnText}>Log In</Text>
+            <Text style={styles.btnText}>Entrar</Text>
           </TouchableHighlight>
         </View>
 

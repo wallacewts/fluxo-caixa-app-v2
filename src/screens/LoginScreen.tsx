@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   View,
 } from "react-native";
 import { AuthContext } from "../hooks/useIsSignedIn";
@@ -69,12 +70,13 @@ export const LoginScreen = () => {
         {isLoading && <ActivityIndicator color="#FFFF00" size="large" />}
         {!isLoading && (
           <View>
-            <Button
-              title="Entrar"
-              onPress={() => {
-                handleSignIn();
-              }}
-            />
+            <TouchableHighlight
+              underlayColor="#CCCCCC"
+              style={styles.button}
+              onPress={() => handleSignIn()}
+            >
+              <Text style={styles.btnText}>Entrar</Text>
+            </TouchableHighlight>
             <Text style={styles.errorMessage}>{signInMessage}</Text>
           </View>
         )}
@@ -87,6 +89,16 @@ const styles = StyleSheet.create({
   bg: {
     flex: 1,
     width: null,
+  },
+  button: {
+    backgroundColor: "#bfb300",
+    margin: 10,
+    height: 40,
+    justifyContent: "center",
+  },
+  btnText: {
+    color: "#FFFFFF",
+    textAlign: "center",
   },
   container: {
     flex: 1,

@@ -54,7 +54,6 @@ export default function App() {
       user: null,
     }
   );
-  const navigation = React.useContext(NavigationContext);
 
   React.useEffect(() => {
     const bootstrapAsync = async () => {
@@ -103,17 +102,32 @@ export default function App() {
 }
 
 const RootStack = createNativeStackNavigator({
-  screens: {
-    Home: {
+  groups: {
+    LoggedIn: {
       if: useIsSignedIn,
-      screen: InternaScreen,
+      screens: {
+        Home: {
+          screen: InternaScreen,
+          options: {
+            headerShown: false,
+          },
+        },
+      },
     },
-    SignIn: {
+    LoggedOut: {
       if: useIsSignedOut,
-      screen: HomeScreen,
-    },
-    Login: {
-      screen: LoginScreen,
+      screens: {
+        SignIn: {
+          screen: HomeScreen,
+          options: {
+            headerShown: false,
+          },
+        },
+        Login: {
+          screen: LoginScreen,
+          options: {},
+        },
+      },
     },
   },
 });

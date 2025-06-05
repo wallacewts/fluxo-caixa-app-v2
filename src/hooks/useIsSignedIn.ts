@@ -9,7 +9,6 @@ export const SignInContext = React.createContext(false);
 
 export const useIsSignedIn = () => {
   const isSignedIn = React.useContext(SignInContext);
-  console.log("isSignedIn", isSignedIn);
   return isSignedIn;
 };
 
