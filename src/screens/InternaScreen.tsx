@@ -1,5 +1,5 @@
 import { firebase } from "@react-native-firebase/auth";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -29,6 +29,30 @@ export const InternaScreen = () => {
     firebase.auth().signOut();
     signOut();
   };
+
+  useEffect(() => {
+    const historico = [
+      { key: "1", type: "receita", value: 10 },
+      { key: "2", type: "despesa", value: 10 },
+      { key: "3", type: "receita", value: 10 },
+      { key: "4", type: "despesa", value: 10 },
+      { key: "5", type: "receita", value: 10 },
+      { key: "6", type: "despesa", value: 10 },
+      { key: "7", type: "receita", value: 10 },
+      { key: "8", type: "despesa", value: 10 },
+      { key: "9", type: "receita", value: 10 },
+      { key: "10", type: "despesa", value: 10 },
+      { key: "11", type: "receita", value: 10 },
+      { key: "12", type: "despesa", value: 10 },
+      { key: "13", type: "receita", value: 10 },
+      { key: "14", type: "receita", value: 10 },
+      { key: "15", type: "receita", value: 10 },
+      { key: "16", type: "despesa", value: 10 },
+    ];
+    const saldo = historico.reduce((acc, item) => acc + item.value, 0);
+    setHistorico(historico);
+    setSaldo(saldo);
+  }, []);
 
   return (
     <ImageBackground source={imgBg} style={styles.bg}>

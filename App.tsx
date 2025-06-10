@@ -15,6 +15,9 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { InternaScreen } from "./src/screens/InternaScreen";
+import { AddDespesaScreen } from "./src/screens/AddDespesaScreen";
+import { AddReceitaScreen } from "./src/screens/AddReceitaScreen";
+import { CadastroScreen } from "./src/screens/CadastroScreen";
 
 type AppState = {
   isLoading: boolean;
@@ -60,6 +63,11 @@ export default function App() {
       let user;
 
       try {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 2000);
+        });
         user = firebase.auth().currentUser;
       } catch (e) {
         console.error(e);
@@ -112,6 +120,18 @@ const RootStack = createNativeStackNavigator({
             headerShown: false,
           },
         },
+        AddDespesa: {
+          screen: AddDespesaScreen,
+          options: {
+            title: "Adicionar Despesa",
+          },
+        },
+        AddReceita: {
+          screen: AddReceitaScreen,
+          options: {
+            title: "Adicionar Receita",
+          },
+        },
       },
     },
     LoggedOut: {
@@ -121,6 +141,12 @@ const RootStack = createNativeStackNavigator({
           screen: HomeScreen,
           options: {
             headerShown: false,
+          },
+        },
+        Cadastro: {
+          screen: CadastroScreen,
+          options: {
+            title: "Cadastro",
           },
         },
         Login: {
