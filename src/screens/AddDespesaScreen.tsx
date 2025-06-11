@@ -1,6 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
+import { firebase } from "@react-native-firebase/auth";
 import { NavigationContext } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Button,
   ImageBackground,
@@ -10,17 +11,49 @@ import {
   TouchableHighlight,
   View,
 } from "react-native";
+import { AuthContext } from "../hooks/useIsSignedIn";
 
 export const AddDespesaScreen = () => {
   const imgBg = require("../assets/fundo.jpg");
+  const [value, setValue] = useState("");
+
+  const handleRetirar = () => {
+    firestore()
+      .collection("historicos")
+      .doc(firebase.auth().currentUser?.uid)
+      .collection("historico")
+      .add({
+        type: "despesa",
+        value,
+      })
+      .then(() => {
+        alert("Despesa adicionada!");
+        setValue("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <ImageBackground source={imgBg} style={styles.bg}>
       <View style={styles.container}>
         <Text style={styles.text}>Quanto você quer retirar?</Text>
 
-        <TextInput style={styles.input} keyboardType="numeric" autoFocus />
-        <TouchableHighlight underlayColor="#CCCCCC" style={styles.button}>
+        <TextInput
+          value={value}
+          onChangeText={(value) => {
+            setValue(value);
+          }}
+          style={styles.input}
+          keyboardType="numeric"
+          autoFocus
+        />
+        <TouchableHighlight
+          underlayColor="#CCCCCC"
+          style={styles.button}
+          onPress={() => handleRetirar()}
+        >
           <Text style={styles.btnText}>Retirar</Text>
         </TouchableHighlight>
       </View>

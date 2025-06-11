@@ -1,3 +1,4 @@
+import firestore from "@react-native-firebase/firestore";
 import { firebase } from "@react-native-firebase/auth";
 import { useContext, useEffect, useState } from "react";
 import {
@@ -15,11 +16,15 @@ import { AuthContext } from "../hooks/useIsSignedIn";
 import { NavigationContext } from "@react-navigation/native";
 import { HistoricoItem } from "../components/HistoricoItem";
 
+type HistoricoItem = {
+  type: string;
+  value: number;
+  key: string;
+};
+
 export const InternaScreen = () => {
   const [saldo, setSaldo] = useState(0);
-  const [historico, setHistorico] = useState<
-    { type: string; value: number; key: string }[]
-  >([]);
+  const [historico, setHistorico] = useState<HistoricoItem[]>([]);
   const imgBg = require("../assets/fundo.jpg");
   const navigation = useContext(NavigationContext);
   const { signOut } = useContext(AuthContext);
@@ -45,27 +50,30 @@ export const InternaScreen = () => {
   };
 
   useEffect(() => {
-    const historico = [
-      { key: "1", type: "receita", value: 10 },
-      { key: "2", type: "despesa", value: 10 },
-      { key: "3", type: "receita", value: 10 },
-      { key: "4", type: "despesa", value: 10 },
-      { key: "5", type: "receita", value: 10 },
-      { key: "6", type: "despesa", value: 10 },
-      { key: "7", type: "receita", value: 10 },
-      { key: "8", type: "despesa", value: 10 },
-      { key: "9", type: "receita", value: 10 },
-      { key: "10", type: "despesa", value: 10 },
-      { key: "11", type: "receita", value: 10 },
-      { key: "12", type: "despesa", value: 10 },
-      { key: "13", type: "receita", value: 10 },
-      { key: "14", type: "receita", value: 10 },
-      { key: "15", type: "receita", value: 10 },
-      { key: "16", type: "despesa", value: 10 },
-    ];
-    const saldo = historico.reduce((acc, item) => acc + item.value, 0);
-    setHistorico(historico);
-    setSaldo(saldo);
+    firestore()
+      .collection("historicos")
+      .doc(firebase.auth().currentUser?.uid)
+      .collection("historico")
+      .onSnapshot({
+        next: (snapShot) => {
+          const historico = snapShot.docs.map((doc) => {
+            const historicoItem = doc?.data();
+            return {
+              key: doc.id,
+              value: historicoItem.value,
+              type: historicoItem.type,
+            };
+          });
+          setHistorico(historico);
+          const saldo = historico.reduce((acc, item) => {
+            if (item.type === "despesa") {
+              return acc - Number(item.value);
+            }
+            return acc + Number(item.value);
+          }, 0);
+          setSaldo(saldo);
+        },
+      });
   }, []);
 
   return (
