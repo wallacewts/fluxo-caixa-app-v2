@@ -5,6 +5,7 @@ import {
   Button,
   FlatList,
   ImageBackground,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -25,6 +26,19 @@ export const InternaScreen = () => {
 
   const handleAddReceita = () => navigation?.navigate("AddReceita");
   const handleAddDespesa = () => navigation?.navigate("AddDespesa");
+  const handleCompartilhar = () => {
+    Share.share({
+      title: "Histórico",
+      message: `
+        Total: R$${saldo}\n
+        ---------------------
+        ${historico.reduce(
+          (acc, item) => acc + `${item.type} - R$${item.value}\n`,
+          ""
+        )}
+      `,
+    });
+  };
   const handleLogOut = () => {
     firebase.auth().signOut();
     signOut();
@@ -69,6 +83,10 @@ export const InternaScreen = () => {
           keyExtractor={(item) => `item-key-${item.key}`}
           style={styles.historico}
         />
+
+        <View style={styles.botoesArea}>
+          <Button title="Compartilhar" onPress={() => handleCompartilhar()} />
+        </View>
 
         <View style={styles.botoesArea}>
           <Button
