@@ -71,6 +71,19 @@ export const InternaScreen = () => {
             }
             return acc + Number(item.value);
           }, 0);
+          firestore()
+            .collection("usuarios")
+            .doc(firebase.auth().currentUser?.uid)
+            .set({
+              saldo,
+            })
+            .then(() => {
+              console.log("saldo atualziado");
+            })
+            .catch((erro) => {
+              alert("Erro atualizar saldo total");
+              console.log(erro);
+            });
           setSaldo(saldo);
         },
       });

@@ -1,6 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import { NavigationContext } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -12,9 +12,29 @@ import {
 export const HomeScreen = () => {
   const imgBg = require("../assets/fundo.jpg");
   const navigation = useContext(NavigationContext);
+  const currencyFormat = Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  });
+  const [saldoTotal, setSaldoTotal] = useState("0");
 
   const handleCadastrar = () => navigation?.navigate("Cadastro");
   const handleLogIn = () => navigation?.navigate("Login");
+
+  useEffect(() => {
+    firestore()
+      .collection("usuarios")
+      .onSnapshot({
+        next: (snapShot) => {
+          const saldoTotal = snapShot.docs.reduce((acc, doc) => {
+            return acc + doc.data().saldo;
+          }, 0);
+
+          setSaldoTotal(currencyFormat.format(saldoTotal));
+        },
+      });
+  }, []);
 
   return (
     <ImageBackground source={imgBg} style={styles.bg}>
@@ -41,7 +61,7 @@ export const HomeScreen = () => {
 
         <View style={styles.numerosArea}>
           <Text>No momento administramos:</Text>
-          <Text>R$ ---</Text>
+          <Text>{saldoTotal}</Text>
         </View>
       </View>
     </ImageBackground>
